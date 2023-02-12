@@ -4,10 +4,41 @@ using UnityEngine;
 
 namespace KODUA
 {
-    public class BootsAndBita : MonoBehaviour
+    public class BootsAndBita : Weapon, IQuarterUsers
     {
         [SerializeField] GameObject _leftBoot, _rightBoot;
         [SerializeField] GameObject _leftBita, _rightBita;
+
+        InputManager _inputManager;
+        Coroutine _innerCo;
+        public void Awake()
+        {
+            _inputManager = InputManager.Instance;
+            IsAvailable = true;
+        }
+        public void OnEnable()
+        {
+            _inputManager.onClickedUpRight += PunchRight;
+            _inputManager.onClickedUpLeft += PunchLeft;
+            _inputManager.onClickedDownRight += KickRight;
+            _inputManager.onClickedDownLeft += KickLeft;
+        }
+        public void OnDisable()
+        {
+            _inputManager.onClickedUpRight -= PunchRight;
+            _inputManager.onClickedUpLeft -= PunchLeft;
+            _inputManager.onClickedDownRight -= KickRight;
+            _inputManager.onClickedDownLeft -= KickLeft;
+            DisableAllGameObjects();
+        }
+        void DisableAllGameObjects()
+        {
+            _leftBoot.SetActive(false);
+            _rightBita.SetActive(false);
+            _rightBoot.SetActive(false);
+            _leftBita.SetActive(false);
+            StopCoroutine(_innerCo);
+        }
 
         public void PunchLeft()
         {
@@ -27,7 +58,8 @@ namespace KODUA
         }
         void EnableGameObjectFor(GameObject go, float delay)
         {
-            StartCoroutine(InnerCo());
+            if (!IsActive) return;
+            _innerCo = StartCoroutine(InnerCo());
 
             IEnumerator InnerCo()
             {
@@ -39,6 +71,7 @@ namespace KODUA
                 go.SetActive(false);
             }
         }
+
         
     } 
 }

@@ -2,47 +2,83 @@ using UnityEngine;
 
 namespace KODUA
 {
-    public class FightManager : MonoBehaviour
+    public enum WeaponType
     {
-        Vector3 _mousePos;
+        Melee, Gun
+    }
+    public class FightManager : MonoBehaviour, IQuarterUsers
+    {
         [SerializeField] Animator _animator;
         [SerializeField] BootsAndBita _bootsAndBita;
+        [SerializeField] Gun _gun;
 
-        private void Update()
-        {
-            CheckInput();
-        }
-        void CheckInput()
-        {
-            _mousePos = Input.mousePosition;
+        WeaponType _currentWeaponType;
+        InputManager _inputManager;
 
-            if (Input.GetMouseButtonDown(0))
+        Weapon _currentWeapon;
+        public void Awake()
+        {
+            _inputManager = InputManager.Instance;
+        }
+        private void Start()
+        {
+            ChangeCurrentWeaponType(WeaponType.Melee);
+        }
+        
+        public void OnEnable()
+        {
+            _inputManager.onClickedUpRight += PunchRight;
+            _inputManager.onClickedUpLeft += PunchLeft;
+            _inputManager.onClickedDownRight += KickRight;
+            _inputManager.onClickedDownLeft += KickLeft;
+        }
+        public void OnDisable()
+        {
+            _inputManager.onClickedUpRight -= PunchRight;
+            _inputManager.onClickedUpLeft -= PunchLeft;
+            _inputManager.onClickedDownRight -= KickRight;
+            _inputManager.onClickedDownLeft -= KickLeft;
+        }
+        public void ChangeCurrentWeaponType(WeaponType newType)
+        {
+            _currentWeaponType = newType;
+
+            switch (newType)
             {
-                CheckQuarters();
+                case WeaponType.Melee:
+                    _bootsAndBita.Activate();
+                    _gun.Deactivate();
+                    _currentWeapon = _bootsAndBita;
+                    break;
+                case WeaponType.Gun:
+                    _bootsAndBita.Deactivate();
+                    _gun.Activate();
+                    _currentWeapon = _gun;
+                    break;
             }
         }
-        void CheckQuarters()
+        public void PunchLeft()
         {
-            if (_mousePos.x < Screen.width / 2 && _mousePos.y < Screen.height / 2)
-            {
-                _animator.SetTrigger(AnimatorParameters.LeftKick);
-                _bootsAndBita.KickLeft();
-            }
-            else if (_mousePos.x >= Screen.width / 2 && _mousePos.y < Screen.height / 2)
-            {
-                _animator.SetTrigger(AnimatorParameters.RightKick);
-                _bootsAndBita.KickRight();
-            }
-            else if (_mousePos.x < Screen.width / 2 && _mousePos.y >= Screen.height / 2)
-            {
-                _animator.SetTrigger(AnimatorParameters.LeftPunch);
-                _bootsAndBita.PunchLeft();
-            }
-            else if (_mousePos.x >= Screen.width / 2 && _mousePos.y >= Screen.height / 2)
-            {
-                _animator.SetTrigger(AnimatorParameters.RightPunch);
-                _bootsAndBita.PunchRight();
-            }
+            if (!_currentWeapon.IsAvailable) return;
+            _animator.SetTrigger(AnimatorParameters.LeftPunch);
+        }
+
+        public void PunchRight()
+        {
+            if (!_currentWeapon.IsAvailable) return;
+            _animator.SetTrigger(AnimatorParameters.RightPunch);
+        }
+
+        public void KickLeft()
+        {
+            if (!_currentWeapon.IsAvailable) return;
+            _animator.SetTrigger(AnimatorParameters.LeftKick);
+        }
+
+        public void KickRight()
+        {
+            if (!_currentWeapon.IsAvailable) return;
+            _animator.SetTrigger(AnimatorParameters.RightKick);
         }
     }
 

@@ -13,6 +13,7 @@ namespace KODUA
         public readonly static string Idle = "Idle";
         public readonly static string Laugh = "Laugh";
         public readonly static string Attack = "Attack";
+        public readonly static string Reload = "Reload";
     }
 
 }
