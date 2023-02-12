@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace KODUA
 {
     public class Gun : Weapon
     {
         [SerializeField] GameObject _gunGameObject;
+        [SerializeField] UnityEvent onFire;
+
         GunAnimator _gunAnimator;
         InputManager _inputManager;
 
@@ -19,11 +22,11 @@ namespace KODUA
         }
         private void OnEnable()
         {
-            _inputManager.onClickedMouse += Shoot;
+            _inputManager.onClickedMouse += Fire;
         }
         private void OnDisable()
         {
-            _inputManager.onClickedMouse -= Shoot;
+            _inputManager.onClickedMouse -= Fire;
         }
         private void Start()
         {
@@ -40,11 +43,11 @@ namespace KODUA
             base.Deactivate();
             _gunGameObject.SetActive(false);
         }
-        void Shoot()
+        void Fire()
         {
             if (!IsActive || !IsAvailable) return;
 
-
+            onFire?.Invoke();
             _gunAnimator.Shoot();
             _currentAmmoCount--;
 
