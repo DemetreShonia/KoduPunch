@@ -133,8 +133,8 @@ MonoBehaviour:
   - {fileID: 6342457391286783110}
   - {fileID: 4324421428332520763}
   m_Bounds:
-    m_Center: {x: 0.0020656586, y: 0.001957059, z: 0}
-    m_Extent: {x: 1.5579354, y: 1.3880453, z: 0}
+    m_Center: {x: 0.0020610094, y: 0.0019563437, z: 0}
+    m_Extent: {x: 1.557935, y: 1.3880441, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
   m_AutoRebind: 0
@@ -154,7 +154,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6173172537117679089
 Transform:
   m_ObjectHideFlags: 0
